@@ -1,0 +1,63 @@
+<mat-toolbar>
+    <button mat-icon-button *ngIf="sidenav.mode === 'over'" 
+    (click)="sidenav.toggle()">
+    
+        <mat-icon *ngIf="!sidenav.opened">menu</mat-icon>
+        <mat-icon *ngIf="sidenav.opened">close</mat-icon>
+    </button> 
+    Administración Escolar
+</mat-toolbar>
+
+<mat-sidenav-container>
+    <mat-sidenav #sidenav="matSidenav">
+        <img class="avatar mat-elevation-z8" src="https://source.unsplash.com/c_GmwfHBDzk/200x200" />
+        <h4 class="name">John Smith</h4>
+        <p class="designation">Administrador</p>
+
+        <mat-divider></mat-divider>
+
+        <button mat-button class="menu-button" (click)="navigateTo('inicio')">
+            <mat-icon class="sidenav-icon">home</mat-icon>
+            <span>Inicio</span>
+        </button>
+
+        <button mat-button class="menu-button" (click)="navigateTo('construct')">
+            <mat-icon class="sidenav-icon">person</mat-icon>
+            <span>Perfil</span>
+        </button>
+
+        <button mat-button class="menu-button" (click)="navigateTo('construct')">
+            <mat-icon class="sidenav-icon">info</mat-icon>
+            <span>Información</span>
+        </button>
+        
+        <button mat-button class="menu-button" (click)="navigateTo('construct')">
+            <mat-icon class="sidenav-icon">help</mat-icon>
+            <span>Ayuda</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-button class="menu-button" (click)="navigateTo('students/list')">
+            <mat-icon class="sidenav-icon">school</mat-icon>
+            <span>Adm Alumnos</span>
+        </button>
+
+        <button mat-button class="menu-button" (click)="navigateTo('curses/list')">
+            <mat-icon class="sidenav-icon">class</mat-icon>
+            <span>Adm Cursos</span>
+        </button>
+
+        <button mat-button class="menu-button" (click)="navigateTo('construct')">
+            <mat-icon class="sidenav-icon">assignment_turned_in</mat-icon>
+            <span>Inscripciones</span>
+        </button>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="content mat-elevation-z4">
+            <!-- <app-dashboard></app-dashboard> -->
+            <!-- <p>ACA IRIA EL DASHBOARD ffff</p> -->
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
