@@ -1,8 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
-import { Student } from 'src/app/interfaces/students';
 import { StudentService } from 'src/app/services/student.service';
 
 @Component({
@@ -10,35 +8,31 @@ import { StudentService } from 'src/app/services/student.service';
   templateUrl: './add-student.component.html',
   styleUrls: ['./add-student.component.css']
 })
-export class AddStudentComponent implements OnInit, OnDestroy {
-  public studentsSubscription: Subscription;
-  public students: Student[] = [];
+export class AddStudentComponent implements OnInit {
   public form!: FormGroup;
+  public newId: string = '';
 
   constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<AddStudentComponent>, 
-    private studentService: StudentService) {
+    private studentService: StudentService) {}
     
-    this.studentsSubscription = this.studentService.getStudents().subscribe((data) => {
-      this.students = data;
+  ngOnInit(): void {
+    this.studentService.getStudents().subscribe((data) => {
+      let lastId: number = data.length -1;
+      this.newId = (lastId + 1).toString();
     });
 
-    let lastStudent = this.students[this.students.length -1];
-
-    this.form = fb.group({
-      id: lastStudent.id + 1,
+    this.initialize();
+  }
+    
+  private initialize() {
+    this.form = this.fb.group({
+      id: this.newId,
       name: ['', [Validators.required, Validators.maxLength(25)]],
       lastname: ['', [Validators.required, Validators.maxLength(40)]],
       email: ['', [Validators.required, Validators.email]],
       average: ['', [Validators.required, Validators.min(1), Validators.max(10)]],
       active: ''
     });
-  }
-  
-  ngOnInit(): void {
-  }
-
-  ngOnDestroy(): void {
-    this.studentsSubscription && this.studentsSubscription.unsubscribe();
   }
 
   public close() {

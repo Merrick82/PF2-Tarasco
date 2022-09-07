@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Curse } from 'src/app/interfaces/curses';
+import { Curse } from 'src/app/interfaces/curse';
 
 @Component({
   selector: 'app-edit-curse',

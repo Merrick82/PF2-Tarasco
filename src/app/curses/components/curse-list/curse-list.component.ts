@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
-import { Subscription } from 'rxjs';
-import { Curse } from 'src/app/interfaces/curses';
+import { Observable } from 'rxjs';
+import { Curse } from 'src/app/interfaces/curse';
 import { CurseService } from 'src/app/services/curse.service';
 import { AddCurseComponent } from '../add-curse/add-curse.component';
 import { EditCurseComponent } from '../edit-curse/edit-curse.component';
@@ -12,28 +12,15 @@ import { EditCurseComponent } from '../edit-curse/edit-curse.component';
   templateUrl: './curse-list.component.html',
   styleUrls: ['./curse-list.component.css']
 })
-export class CurseListComponent implements OnInit, OnDestroy {
+export class CurseListComponent implements OnInit {
   public columns: string[] = ['curso', 'profesor', 'activo', 'acciones'];
-  public curses: Curse[] = [];
-  public cursesSubscription: Subscription;
-  public cursesDeleteSubscription!: Subscription;
-  public cursesAddSubscription!: Subscription;
-  public cursesEditSubscription!: Subscription;
+  public curses$!: Observable<Curse[]>;
   
   @ViewChild(MatTable) table!: MatTable<Curse>;
-  constructor(private dialog: MatDialog, private curseService: CurseService) { 
-    this.cursesSubscription = this.curseService.getCurses().subscribe((data) => {
-      this.curses = data;
-    }); 
-  }
-  ngOnDestroy(): void {
-    this.cursesSubscription && this.cursesSubscription.unsubscribe();
-    this.cursesDeleteSubscription && this.cursesDeleteSubscription.unsubscribe();
-    this.cursesAddSubscription && this.cursesAddSubscription.unsubscribe();
-    this.cursesEditSubscription && this.cursesEditSubscription.unsubscribe();
-  }
+  constructor(private dialog: MatDialog, private curseService: CurseService) {}
 
   ngOnInit(): void {
+    this.curses$ = this.curseService.getCurses();
   }
 
   public addCurse() {
@@ -44,8 +31,11 @@ export class CurseListComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.cursesAddSubscription = this.curseService.addCurse(res).subscribe((data) => {
-          this.curses = data;
+        this.curseService.addCurse(res).subscribe((data) => {
+          if (data) {
+            alert(`${data.id}-${data.title} fue agregado satisfactoriamente`);
+            this.ngOnInit();
+          }
         });
         
         this.table.renderRows();
@@ -62,8 +52,11 @@ export class CurseListComponent implements OnInit, OnDestroy {
     
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.cursesEditSubscription = this.curseService.editCurse(res).subscribe((data) => {
-          this.curses = data;
+        this.curseService.editCurse(res).subscribe((data) => {
+          if (data) {
+            alert(`${data.id}-${data.title} fue modificado satisfactoriamente`);
+            this.ngOnInit();
+          }
         });
         
         this.table.renderRows();
@@ -72,8 +65,11 @@ export class CurseListComponent implements OnInit, OnDestroy {
   }
   
   public deleteCurse(curse: Curse) {
-    this.cursesDeleteSubscription = this.curseService.deleteCurse(curse.id).subscribe((data) => {
-      this.curses = data;
+    this.curseService.deleteCurse(curse.id).subscribe((data) => {
+      if (data) {
+        alert(`${data.id}-${data.title} fue eliminado satisfactoriamente`);
+        this.ngOnInit();
+      }
     });
   }
 }

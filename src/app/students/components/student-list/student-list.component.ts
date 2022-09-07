@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
-import { Subscription } from 'rxjs';
-import { Student } from 'src/app/interfaces/students';
+import { Observable } from 'rxjs';
+import { Student } from 'src/app/interfaces/student';
 import { StudentService } from 'src/app/services/student.service';
 import { AddStudentComponent } from '../add-student/add-student.component';
 import { EditStudentComponent } from '../edit-student/edit-student.component';
@@ -12,29 +12,16 @@ import { EditStudentComponent } from '../edit-student/edit-student.component';
   templateUrl: './student-list.component.html',
   styleUrls: ['./student-list.component.css']
 })
-export class StudentListComponent implements OnInit, OnDestroy {
+export class StudentListComponent implements OnInit {
   public columns: string[] = ['nombre', 'promedio', 'cursando', 'acciones'];
-  public students: Student[] = [];
-  public studentsSubscription: Subscription;
-  public studentsDeleteSubscription!: Subscription;
-  public studentsAddSubscription!: Subscription;
-  public studentsEditSubscription!: Subscription;
+  // public students: Student[] = [];
+  public students$!: Observable<Student[]>;
 
   @ViewChild(MatTable) table!: MatTable<Student>;
-  constructor(private dialog: MatDialog, private studentService: StudentService) { 
-      this.studentsSubscription = this.studentService.getStudents().subscribe((data) => {
-        this.students = data;
-      });
-    }
+  constructor(private dialog: MatDialog, private studentService: StudentService) { }
     
   ngOnInit(): void {
-  }
-  
-  ngOnDestroy(): void {
-    this.studentsSubscription && this.studentsSubscription.unsubscribe();
-    this.studentsDeleteSubscription && this.studentsDeleteSubscription.unsubscribe();
-    this.studentsAddSubscription && this.studentsAddSubscription.unsubscribe();
-    this.studentsEditSubscription && this.studentsEditSubscription.unsubscribe();
+    this.students$ = this.studentService.getStudents();
   }
 
   public addStudent() {
@@ -45,8 +32,11 @@ export class StudentListComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.studentsAddSubscription = this.studentService.addStudent(res).subscribe((data) => {
-          this.students = data;
+        this.studentService.addStudent(res).subscribe((data) => {
+          if (data) {
+            alert(`${data.id}-${data.name} ${data.lastname} fue agregado satisfactoriamente`);
+            this.ngOnInit();
+          }
         });
         
         this.table.renderRows();
@@ -63,8 +53,11 @@ export class StudentListComponent implements OnInit, OnDestroy {
     
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.studentsEditSubscription = this.studentService.editStudent(res).subscribe((data) => {
-          this.students = data;
+        this.studentService.editStudent(res).subscribe((data) => {
+          if (data) {
+            alert(`${data.id}-${data.name} ${data.lastname} fue modificado satisfactoriamente`);
+            this.ngOnInit();
+          }
         });
         
         this.table.renderRows();
@@ -73,8 +66,11 @@ export class StudentListComponent implements OnInit, OnDestroy {
   }
   
   public deleteStudent(student: Student) {
-    this.studentsDeleteSubscription = this.studentService.deleteStudent(student.id).subscribe((data) => {
-      this.students = data;
+    this.studentService.deleteStudent(student.id).subscribe((data) => {
+      if (data) {
+        alert(`${data.id}-${data.name} ${data.lastname} fue eliminado satisfactoriamente`);
+        this.ngOnInit();
+      }
     });
   }
 }

@@ -1,12 +1,15 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Curse } from '../interfaces/curses';
+import { environment } from 'src/environments/environment';
+import { Curse } from '../interfaces/curse';
+import { Student } from '../interfaces/student';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurseService {
-  public curseList: Curse[] = [
+  /*public curseList: Curse[] = [
     { id: 1, title: 'Java', professor: 'Ramon Caucele', active: true },
     { id: 2, title: 'Postgres SQL', professor: 'Fiorella Piccolo', active: true },
     { id: 3, title: 'Angular', professor: 'Walter Delgado', active: true },
@@ -14,9 +17,33 @@ export class CurseService {
     { id: 5, title: 'ReactJS', professor: 'Ezequiel Antelli', active: true },
   ];
 
-  constructor() { }
+  constructor() { }*/
+  private api: string = environment.api;
 
-  public getCurses() {
+  constructor(private http: HttpClient) { }
+
+  public getCurses(): Observable<Curse[]> {
+    return this.http.get<Curse[]>(`${this.api}/curses`, {
+      headers: new HttpHeaders({
+        'content-type': 'application/json',
+        'encoding': 'UTF-8'
+      })
+    })
+  }
+
+  public addCurse(curse: Curse) {
+    return this.http.post<Curse>(`${this.api}/curses`, curse);
+  }
+
+  public editCurse(curse: Curse) {
+    return this.http.put<Curse>(`${this.api}/curses/${curse.id}`, curse);
+  }
+
+  public deleteCurse(id: string) {
+    return this.http.delete<Curse>(`${this.api}/curses/${id}`);
+  }
+
+  /*public getCurses() {
     return new Observable<Curse[]>((data) => {
       data.next(this.curseList);
     });
@@ -45,5 +72,5 @@ export class CurseService {
 
       data.next(this.curseList);
     });
-  }
+  }*/
 }

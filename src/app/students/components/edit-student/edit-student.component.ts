@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Student } from 'src/app/interfaces/students';
+import { Student } from 'src/app/interfaces/student';
 
 @Component({
   selector: 'app-edit-student',
