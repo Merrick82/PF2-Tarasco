@@ -23,6 +23,7 @@ export class OperatorService {
 
   public getRandomOperator(): Observable<Operator> {
     let id: number = this.generateRandomIntegerInRange(1, 7);
+    console.log('getRandomOperator', id);
     return this.http.get<Operator>(`${this.api}/operators/${id}`);
   }
 
@@ -31,6 +32,7 @@ export class OperatorService {
   }
 
   public saveAdminStatus(isAdmin: string) {
+    console.log('saveAdminStatus', isAdmin);
     localStorage.setItem('_Admin', isAdmin);
   }
 

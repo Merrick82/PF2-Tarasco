@@ -28,10 +28,6 @@ export class LayoutComponent implements OnInit {
     private operatorService: OperatorService) {}
     
   ngOnInit(): void {
-    // this.operatorService.getOperators().subscribe((data) => {
-    //   this.operator = data[0];
-    // });
-
     this.operatorService.getRandomOperator().subscribe((data) => {
       this.operator = data;
       this.operatorService.saveAdminStatus(JSON.stringify(this.operator.admin));
