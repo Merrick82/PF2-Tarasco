@@ -4,9 +4,11 @@ import { UnderConstructComponent } from './components/under-construct/under-cons
 import { InitComponent } from './core/components/init/init.component';
 
 const routes: Routes = [
-  {path: 'inicio', component: InitComponent},
-  {path: 'construct', component: UnderConstructComponent},
-  {path: '', redirectTo: '/inicio', pathMatch: 'full'}
+  { path: 'inicio', component: InitComponent },
+  { path: 'construct', component: UnderConstructComponent },
+  { path: 'students', loadChildren: () => import('./students/students.module').then((m) => m.StudentsModule) },
+  { path: 'curses', loadChildren: () => import('./curses/curses.module').then((m) => m.CursesModule) },
+  { path: '', redirectTo: '/inicio', pathMatch: 'full' }
 ];
 
 @NgModule({
